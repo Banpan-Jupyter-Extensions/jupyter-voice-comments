@@ -15,10 +15,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
   activate: (app: JupyterFrontEnd) => {
     console.log('JupyterLab extension jupyter-voice-comments is activated!');
 
-    const widget: Widget = new Widget();
+    const widget = new Widget();
     widget.id = 'lm-VoiceWidget';
     const button = document.createElement('button');
     button.id = 'lm-VoiceWidget-button';
+    widget.node.appendChild(button);
+    console.log('APP SHELL', app.shell);
     app.shell.add(widget, 'top');
     requestAPI<any>('get_example')
       .then(data => {

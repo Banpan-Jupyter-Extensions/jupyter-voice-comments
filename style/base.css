@@ -5,15 +5,14 @@
 */
 
 #lm-VoiceWidget {
-    width: 24px;
+    width: 20px;
     height: 27px;
     display: grid;
     place-content: center;
 }
 
 #lm-VoiceWidget-button {
-    width: 14px;
-    height: 14px;
+    height: 10px;
     border-radius: 50%;
     background-color: beige;
     border: 1px solid rgba(0, 0, 0, 0);
