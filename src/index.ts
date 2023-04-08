@@ -20,22 +20,29 @@ const plugin: JupyterFrontEndPlugin<void> = {
       (window as any).webkitSpeechRecognition;
 
     const recognition = new SpeechRecognition();
-
+    let isRecording = false;
     recognition.addEventListener('result', (event: any) => {
       const last = event.results.length - 1;
       const text = event.results[last][0].transcript;
       console.log('Text: ' + text);
     });
 
-    const startRecording = () => {
-      recognition.start();
-      console.log('Voice activated, try speaking into the microphone.');
+    const toggleRecording = () => {
+      if (isRecording) {
+        recognition.stop();
+        isRecording = false;
+        console.log('Stopped recording');
+      } else {
+        recognition.start();
+        isRecording = true;
+        console.log('Started recording');
+      }
     };
     const widget = new Widget();
     widget.id = 'lm-VoiceWidget';
     const button = document.createElement('button');
     button.id = 'lm-VoiceWidget-button';
-    button.addEventListener('click', startRecording);
+    button.addEventListener('click', toggleRecording);
     widget.node.appendChild(button);
     console.log('APP SHELL', app.shell);
     app.shell.add(widget, 'top');
