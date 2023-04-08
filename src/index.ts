@@ -4,6 +4,7 @@ import {
 } from '@jupyterlab/application';
 
 import { requestAPI } from './handler';
+import { Widget } from '@lumino/widgets';
 
 /**
  * Initialization data for the jupyter-voice-comments extension.
@@ -14,6 +15,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
   activate: (app: JupyterFrontEnd) => {
     console.log('JupyterLab extension jupyter-voice-comments is activated!');
 
+    const widget: Widget = new Widget();
+    widget.id = 'lm-VoiceWidget';
+    const button = document.createElement('button');
+    button.id = 'lm-VoiceWidget-button';
+    app.shell.add(widget, 'top');
     requestAPI<any>('get_example')
       .then(data => {
         console.log(data);

@@ -3,3 +3,19 @@
 
     https://jupyterlab.readthedocs.io/en/stable/developer/css.html
 */
+
+#lm-VoiceWidget {
+    width: 24px;
+    height: 27px;
+    display: grid;
+    place-content: center;
+}
+
+#lm-VoiceWidget-button {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: beige;
+    border: 1px solid rgba(0, 0, 0, 0);
+    outline: 2px solid beige;
+}
