@@ -2,7 +2,7 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
-
+import { INotebookTracker, NotebookActions } from '@jupyterlab/notebook';
 import { requestAPI } from './handler';
 import { Widget } from '@lumino/widgets';
 
@@ -12,7 +12,8 @@ import { Widget } from '@lumino/widgets';
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyter-voice-comments:plugin',
   autoStart: true,
-  activate: (app: JupyterFrontEnd) => {
+  requires: [INotebookTracker],
+  activate: (app: JupyterFrontEnd, notebookTracker: INotebookTracker) => {
     console.log('JupyterLab extension jupyter-voice-comments is activated!');
 
     const SpeechRecognition =
@@ -21,11 +22,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     const recognition = new SpeechRecognition();
     let isRecording = false;
-    recognition.addEventListener('result', (event: any) => {
-      const last = event.results.length - 1;
-      const text = event.results[last][0].transcript;
-      console.log('Text: ' + text);
-    });
 
     const toggleRecording = () => {
       if (isRecording) {
@@ -38,6 +34,41 @@ const plugin: JupyterFrontEndPlugin<void> = {
         console.log('Started recording');
       }
     };
+
+    app.commands.addCommand('jupyter-voice-comments:insert-comment', {
+      label: 'Insert Comment',
+      execute: (args: any) => {
+        console.log('Insert Comment', args);
+        const { comment } = args;
+
+        const current = notebookTracker.currentWidget;
+
+        if (current) {
+          const notebook = current.content;
+
+          NotebookActions.insertAbove(notebook);
+          NotebookActions.changeCellType(notebook, 'markdown');
+          NotebookActions.run(notebook);
+
+          const cell = notebook.activeCell;
+          if (cell) {
+            cell.model.value.text = comment;
+          }
+        } else {
+          console.log('No active notebook');
+        }
+      }
+    });
+
+    recognition.addEventListener('result', (event: any) => {
+      const last = event.results.length - 1;
+      const text = event.results[last][0].transcript;
+      app.commands.execute('jupyter-voice-comments:insert-comment', {
+        comment: text
+      });
+      console.log('Text: ' + text);
+    });
+
     const widget = new Widget();
     widget.id = 'lm-VoiceWidget';
     const button = document.createElement('button');
