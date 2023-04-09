@@ -3,7 +3,6 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 import { INotebookTracker, NotebookActions } from '@jupyterlab/notebook';
-import { requestAPI } from './handler';
 import { Widget } from '@lumino/widgets';
 import { createModal, dragElement } from './createModal';
 /**
@@ -16,13 +15,15 @@ const plugin: JupyterFrontEndPlugin<void> = {
   activate: (app: JupyterFrontEnd, notebookTracker: INotebookTracker) => {
     console.log('JupyterLab extension jupyter-voice-comments is activated!');
 
+    // Web Speech API initialization
     const SpeechRecognition =
       (window as any).SpeechRecognition ||
       (window as any).webkitSpeechRecognition;
-
     const recognition = new SpeechRecognition();
+    recognition.continuous = true;
     let isRecording = false;
 
+    // function that toggles recording
     const toggleRecording = () => {
       if (isRecording) {
         recognition.stop();
@@ -53,11 +54,20 @@ const plugin: JupyterFrontEndPlugin<void> = {
           if (cell) {
             cell.model.value.text = comment;
           }
-          dragElement(
-            createModal(
-              'def transpose_matrix(matrix):\n  transposed_matrix = []\n  for i in range(len(matrix[0])):\n    transposed_row = []\n    for row in matrix:\n      transposed_row.append(row[i])\n    transposed_matrix.append(transposed_row)\n  return transposed_matrix'
-            )
-          );
+          const url =
+            'https://q6ya2o2jm2.execute-api.us-east-2.amazonaws.com/default/jplext-voice-comments-openai';
+          const prompt = `Give me a python code snippet based on the following comment: ${comment}. Do not include the comment in the code snippet. The code snippet should be a valid python code snippet. Do not include any examples of running the code in the snippet. Make sure that all new function definitions are on a new line, and follow proper Python formatting conventions. This is for a JupyterLab extension that just uses the response from this prompt to display a code snippet modal. Users should be able to copy the code snippet from the modal and run it in their jupyter notebook.`;
+
+          // async function that fetches a code snippet from openai based on the voice comment and creates a draggable modal with the code snippet
+          const fetchOPENAI = async () => {
+            const response = await fetch(url, {
+              method: 'POST',
+              body: JSON.stringify({ text: prompt })
+            });
+            const data = await response.json();
+            dragElement(createModal(data.result));
+          };
+          fetchOPENAI();
         } else {
           console.log('No active notebook');
         }
@@ -71,7 +81,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
         comment: text
       });
     });
-
+    // creates a Widget that contains a button that toggles recording.
+    // I plan to make the widget contain the button and the modal with better user functionality
     const widget = new Widget();
     widget.id = 'lm-VoiceWidget';
     const button = document.createElement('button');
@@ -79,15 +90,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     button.addEventListener('click', toggleRecording);
     widget.node.appendChild(button);
     app.shell.add(widget, 'top');
-    requestAPI<any>('get_example')
-      .then(data => {
-        console.log(data);
-      })
-      .catch(reason => {
-        console.error(
-          `The jupyter-voice-comments server extension appears to be missing.\n${reason}`
-        );
-      });
   }
 };
 
