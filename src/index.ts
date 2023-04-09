@@ -5,7 +5,7 @@ import {
 import { INotebookTracker, NotebookActions } from '@jupyterlab/notebook';
 import { requestAPI } from './handler';
 import { Widget } from '@lumino/widgets';
-
+import createModal from './createModal';
 /**
  * Initialization data for the jupyter-voice-comments extension.
  */
@@ -38,7 +38,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     app.commands.addCommand('jupyter-voice-comments:insert-comment', {
       label: 'Insert Comment',
       execute: (args: any) => {
-        console.log('Insert Comment', args);
         const { comment } = args;
 
         const current = notebookTracker.currentWidget;
@@ -54,6 +53,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
           if (cell) {
             cell.model.value.text = comment;
           }
+          createModal(comment);
         } else {
           console.log('No active notebook');
         }
@@ -66,7 +66,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
       app.commands.execute('jupyter-voice-comments:insert-comment', {
         comment: text
       });
-      console.log('Text: ' + text);
     });
 
     const widget = new Widget();
@@ -75,7 +74,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     button.id = 'lm-VoiceWidget-button';
     button.addEventListener('click', toggleRecording);
     widget.node.appendChild(button);
-    console.log('APP SHELL', app.shell);
     app.shell.add(widget, 'top');
     requestAPI<any>('get_example')
       .then(data => {
