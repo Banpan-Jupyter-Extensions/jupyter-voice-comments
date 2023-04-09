@@ -2,11 +2,15 @@
 
 export const createModal = (modalContent: string) => {
   const relativeElement = document.getElementsByClassName('jp-Notebook')[0];
-  const modal = document.createElement('div');
+  const modalContainer = document.createElement('div');
+  modalContainer.id = 'lm-VoiceWidget-modalContainer';
+
+  const modal = document.createElement('pre');
   modal.id = 'lm-VoiceWidget-modal';
   modal.textContent = modalContent !== null ? modalContent : '';
   modal.tabIndex = 0; // Add tabindex to make modal focusable
-  relativeElement.appendChild(modal); // Append modal to activeCell
+  modalContainer.appendChild(modal);
+  relativeElement.appendChild(modalContainer); // Append modal to activeCell
   modal.focus(); // Focus on modal
 
   modal.addEventListener('keydown', (event: any) => {
@@ -27,7 +31,9 @@ export const createModal = (modalContent: string) => {
     modal.focus(); // Give modal focus when clicked
   });
 
-  return modal;
+  dragElement(modalContainer);
+
+  return modalContainer;
 };
 
 export const dragElement = (ele: any) => {

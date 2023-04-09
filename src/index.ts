@@ -53,7 +53,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
           if (cell) {
             cell.model.value.text = comment;
           }
-          dragElement(createModal(comment));
+          dragElement(
+            createModal(
+              'def transpose_matrix(matrix):\n  transposed_matrix = []\n  for i in range(len(matrix[0])):\n    transposed_row = []\n    for row in matrix:\n      transposed_row.append(row[i])\n    transposed_matrix.append(transposed_row)\n  return transposed_matrix'
+            )
+          );
         } else {
           console.log('No active notebook');
         }

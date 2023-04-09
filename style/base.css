@@ -22,6 +22,12 @@
 .jp-mod-active {
     position: relative;
 }
+
+#lm-VoiceWidget-modalContainer {
+    position: absolute;
+    z-index: 1000;
+}
+
 #lm-VoiceWidget-modal {
     position: absolute;
     background-color: rgb(228, 228, 228);
