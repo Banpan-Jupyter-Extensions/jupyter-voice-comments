@@ -5,7 +5,7 @@ import {
 import { INotebookTracker, NotebookActions } from '@jupyterlab/notebook';
 import { requestAPI } from './handler';
 import { Widget } from '@lumino/widgets';
-import createModal from './createModal';
+import { createModal, dragElement } from './createModal';
 /**
  * Initialization data for the jupyter-voice-comments extension.
  */
@@ -53,7 +53,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
           if (cell) {
             cell.model.value.text = comment;
           }
-          createModal(comment);
+          dragElement(createModal(comment));
         } else {
           console.log('No active notebook');
         }
