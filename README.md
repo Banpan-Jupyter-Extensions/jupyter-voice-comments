@@ -20,13 +20,22 @@ After installation you can activate the microphone by pressing the button on the
 ## Conda Environment
 
 I recommend running your jupyter lab notebook in a new conda environment to test the extension before adding it to your existing environment. You can create a new conda environment by using the following command:
-```conda create -n jupyterlab-test-extension --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=3 nodejs```
+
+```
+conda create -n jupyterlab-test-extension --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=3 nodejs
+```
 
 then you can activate the environment with:
-```conda activate jupyterlab-test-extension```
+
+```
+conda activate jupyterlab-test-extension
+```
 
 then open up jupyter lab:
-```jupyter lab```
+
+```
+jupyter lab
+```
 
 ## Install
 
