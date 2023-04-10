@@ -1,5 +1,4 @@
 // function to create modal
-
 export const createModal = (modalContent: string) => {
   const relativeElement = document.getElementsByClassName('jp-Notebook')[0];
   const modalContainer = document.createElement('div');
@@ -72,4 +71,9 @@ export const dragElement = (ele: any) => {
     document.onmouseup = null;
     document.onmousemove = null;
   }
+};
+
+export const openaiPrompt = (comment: string) => {
+  const prompt = `Give me a python code snippet based on the following comment: ${comment}. Do not include the comment in the code snippet. The code snippet should be a valid python code snippet. Do not include any examples of running the code in the snippet. Make sure that all new function definitions are on a new line, and follow proper Python formatting conventions. Make sure any helper functions that are needed for the code snippet are also definied in the snippet. This is for a JupyterLab extension that just uses the response from this prompt to display a code snippet modal. Users should be able to copy the code snippet from the modal and run it in their jupyter notebook.`;
+  return prompt;
 };

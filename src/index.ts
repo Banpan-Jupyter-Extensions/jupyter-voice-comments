@@ -4,7 +4,7 @@ import {
 } from '@jupyterlab/application';
 import { INotebookTracker, NotebookActions } from '@jupyterlab/notebook';
 import { Widget } from '@lumino/widgets';
-import { createModal, dragElement } from './createModal';
+import { createModal, dragElement, openaiPrompt } from './utils';
 /**
  * Initialization data for the jupyter-voice-comments extension.
  */
@@ -24,6 +24,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     let isRecording = false;
 
     // function that toggles recording
+    // I need to make it so that the button changes color when recording is toggled and possibly have a setTimeout that stops recording after a certain amount of time
     const toggleRecording = () => {
       if (isRecording) {
         recognition.stop();
@@ -36,6 +37,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       }
     };
 
+    // creates a new command that inserts a comment and fetches a code snippet from openai based on the comment
     app.commands.addCommand('jupyter-voice-comments:insert-comment', {
       label: 'Insert Comment',
       execute: (args: any) => {
@@ -56,8 +58,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
           }
           const url =
             'https://q6ya2o2jm2.execute-api.us-east-2.amazonaws.com/default/jplext-voice-comments-openai';
-          const prompt = `Give me a python code snippet based on the following comment: ${comment}. Do not include the comment in the code snippet. The code snippet should be a valid python code snippet. Do not include any examples of running the code in the snippet. Make sure that all new function definitions are on a new line, and follow proper Python formatting conventions. This is for a JupyterLab extension that just uses the response from this prompt to display a code snippet modal. Users should be able to copy the code snippet from the modal and run it in their jupyter notebook.`;
-
+          const prompt = openaiPrompt(comment);
           // async function that fetches a code snippet from openai based on the voice comment and creates a draggable modal with the code snippet
           const fetchOPENAI = async () => {
             const response = await fetch(url, {
