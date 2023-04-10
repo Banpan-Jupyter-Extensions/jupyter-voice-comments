@@ -30,9 +30,9 @@
 #lm-VoiceWidget-button {
     height: 10px;
     border-radius: 50%;
-    background-color: beige;
+    background-color: rgb(155, 155, 155);
     border: 1px solid rgba(0, 0, 0, 0);
-    outline: 2px solid beige;
+    outline: 2px solid rgb(155, 155, 155);
 }
 
 .jp-mod-active {

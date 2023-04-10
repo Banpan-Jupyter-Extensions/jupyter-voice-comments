@@ -1,15 +1,32 @@
 # jupyter-voice-comments
 
-[![Github Actions Status](https://github.com/Banpan-Jupyter-Extensions/jupyter-voice-comments.git/workflows/Build/badge.svg)](https://github.com/Banpan-Jupyter-Extensions/jupyter-voice-comments.git/actions/workflows/build.yml)
-A simple extension to allow the creation of markdown cells via speech-to-text.
+A simple extension to allow the creation of markdown cells via speech-to-text and get code snippet suggestions based on the comment.
 
-This extension is composed of a Python package named `jupyter-voice-comments`
-for the server extension and a NPM package named `jupyter-voice-comments`
-for the frontend extension.
+## Usage
+
+After installation you can activate the microphone by pressing the button on the top menu bar next to the help button. The browser might ask for access to your microphone, you will need to approve access for this extension to work.
+
+* Once you have given the browser access to your microphone, you can press the button or ALT/OPTION + V to toggle voice recording.
+* You can now insert a comment by saying something like "function that adds one to a number".
+* A mardown cell will be inserted above your current cell with the comment you spoke
+* Then a code snippet will appear based on your comment.
+* You can click on the code snippet and press CTRL + C to copy then click a cell and press CTRL + V to paste the code snippet in.
+* Be sure to always check the logic in the code snippet for accuracy. The code snippets come from OpenAI DaVinci 003 model so it can contains errors or inaccuracies.
 
 ## Requirements
 
 - JupyterLab >= 3.0
+
+## Conda Environment
+
+I recommend running your jupyter lab notebook in a new conda environment to test the extension before adding it to your existing environment. You can create a new conda environment by using the following command:
+`conda create -n jupyterlab-test-extension --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=3 nodejs`
+
+then you can activate the environment with:
+`conda activate jupyterlab-test-extension`
+
+then open up jupyter lab:
+`jupyter lab`
 
 ## Install
 
