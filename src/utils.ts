@@ -13,7 +13,11 @@ export const createModal = (modalContent: string) => {
   modal.focus(); // Focus on modal
 
   modal.addEventListener('keydown', (event: any) => {
-    if (event.key === 'Escape') {
+    if (
+      event.key === 'Escape' ||
+      event.key === 'Delete' ||
+      event.key === 'Backspace'
+    ) {
       modal.remove();
     }
 
