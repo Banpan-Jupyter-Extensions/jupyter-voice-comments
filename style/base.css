@@ -9,6 +9,22 @@
     height: 27px;
     display: grid;
     place-content: center;
+    position: relative;
+}
+
+/* #lm-VoiceWidget::after {
+    content: "Toggle voice recognition (Alt+V)";
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    width: fit-content;
+    padding: 0.25rem;
+    display: none;
+    background-color: beige;
+} */
+
+#lm-VoiceWidget:hover::after {
+    display: block;
 }
 
 #lm-VoiceWidget-button {

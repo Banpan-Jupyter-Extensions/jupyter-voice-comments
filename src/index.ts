@@ -23,17 +23,27 @@ const plugin: JupyterFrontEndPlugin<void> = {
     recognition.continuous = true;
     let isRecording = false;
 
-    // function that toggles recording
-    // I need to make it so that the button changes color when recording is toggled and possibly have a setTimeout that stops recording after a certain amount of time
     const toggleRecording = () => {
-      if (isRecording) {
-        recognition.stop();
+      const button = document.getElementById('lm-VoiceWidget-button');
+      const buttonStyle = (button as HTMLElement).style;
+
+      const resetStyles = () => {
+        buttonStyle.backgroundColor = 'rgb(224, 224, 224)';
+        buttonStyle.outline = '2px solid rgb(224, 224, 224)';
+      };
+      const resetRecording = () => {
         isRecording = false;
-        console.log('Stopped recording');
+        recognition.stop();
+        resetStyles();
+      };
+
+      if (isRecording) {
+        resetRecording();
       } else {
         recognition.start();
         isRecording = true;
-        console.log('Started recording');
+        buttonStyle.backgroundColor = 'rgb(228, 99, 99)';
+        buttonStyle.outline = '2px solid rgb(228, 99, 99)';
       }
     };
 
@@ -56,6 +66,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
           if (cell) {
             cell.model.value.text = comment;
           }
+
+          /***********************************************
+           * Clean up the fetch request to openai below  *
+           * I plan to make it so that the fetch request *
+           * is made in a separate file                  *
+           **********************************************/
           const url =
             'https://q6ya2o2jm2.execute-api.us-east-2.amazonaws.com/default/jplext-voice-comments-openai';
           const prompt = openaiPrompt(comment);
@@ -69,6 +85,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
             dragElement(createModal(data.result));
           };
           fetchOPENAI();
+
+          /************************************************
+           * Add a loading spinner on the modal that is   *
+           * removed when the fetch request is complete.  *
+           * Create the function in a separate file.      *
+           ************************************************/
         } else {
           console.log('No active notebook');
         }
@@ -82,13 +104,26 @@ const plugin: JupyterFrontEndPlugin<void> = {
         comment: text
       });
     });
-    // creates a Widget that contains a button that toggles recording.
-    // I plan to make the widget contain the button and the modal with better user functionality
+    /******************************************************
+     * Add a widget to the top of the JupyterLab window   *
+     * that includes a button to toggle voice recording   *
+     * on and off.                                        *
+     * I also need to include the code snippet in the     *
+     * widget. Also, add more user functionality to close *
+     * the widget and modify the code snippet.            *
+     ******************************************************/
     const widget = new Widget();
     widget.id = 'lm-VoiceWidget';
     const button = document.createElement('button');
     button.id = 'lm-VoiceWidget-button';
+    button.title = 'Toggle voice recording (Alt + V)';
     button.addEventListener('click', toggleRecording);
+    document.addEventListener('keydown', (event: any) => {
+      if (event.altKey && event.key === 'v') {
+        toggleRecording();
+      }
+    });
+    console.log('PIZZA');
     widget.node.appendChild(button);
     app.shell.add(widget, 'top');
   }
